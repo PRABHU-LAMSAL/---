@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>विवरणहरू हेर्नुहोस् - चिना विवरण</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            overflow-y: auto;
+            height: auto;
+            min-height: 100vh;
+        }
+        
+        .container {
+            height: auto;
+            min-height: 100vh;
+            overflow: visible;
+        }
+        
+        .main-content {
+            overflow: visible;
+        }
+        
+        .search-section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 24px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        
+        .search-input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .search-input-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: var(--bg-color);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .search-btn {
+            padding: 12px 24px;
+            white-space: nowrap;
+        }
+        
+        .clear-btn {
+            padding: 12px 24px;
+            white-space: nowrap;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+        
+        .clear-btn:hover {
+            background: var(--border-color);
+        }
+        
+        .results-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--bg-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .no-results-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 16px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-5px);
+        }
+        
+        @media (max-width: 480px) {
+            .back-link {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+                margin-bottom: 12px;
+            }
+        }
+        
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            overflow: visible;
+        }
+        
+        .display-section {
+            overflow: visible;
+            height: auto;
+        }
+        
+        .details-list {
+            overflow: visible;
+            max-height: none;
+            height: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .search-section {
+                padding: 20px 16px;
+                margin-bottom: 20px;
+                border-radius: 12px;
+            }
+            
+            .search-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .search-input-group {
+                min-width: 100%;
+            }
+            
+            .search-input-group label {
+                font-size: 0.9rem;
+            }
+            
+            .search-input {
+                padding: 10px 14px;
+                font-size: 0.95rem;
+            }
+            
+            .search-btn,
+            .clear-btn {
+                width: 100%;
+                padding: 10px 20px;
+                font-size: 0.95rem;
+            }
+            
+            .details-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .results-info {
+                padding: 12px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .search-section {
+                padding: 16px 12px;
+                margin-bottom: 16px;
+                border-radius: 10px;
+            }
+            
+            .search-input {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .search-btn,
+            .clear-btn {
+                padding: 10px 18px;
+                font-size: 0.9rem;
+            }
+            
+            .details-grid {
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="back-link">← मुख्य पृष्ठमा फर्कनुहोस्</a>
+            <h1>🔍 विवरणहरू खोज्नुहोस्</h1>
+            <p class="subtitle">नाम वा चिना नं- को आधारमा विवरणहरू खोज्नुहोस्</p>
+        </header>
+
+        <div class="search-section">
+            <div class="search-container">
+                <div class="search-input-group">
+                    <label for="searchInput">खोज (नाम वा चिना नं-):</label>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="search-input" 
+                        placeholder="नाम वा चिना नं- टाइप गर्नुहोस्..."
+                        autocomplete="off"
+                    >
+                </div>
+                <button id="searchBtn" class="btn btn-primary search-btn">
+                    🔍 खोज्नुहोस्
+                </button>
+                <button id="clearBtn" class="btn clear-btn">
+                    ✖️ सफा गर्नुहोस्
+                </button>
+            </div>
+            <div id="resultsInfo" class="results-info" style="display: none;"></div>
+        </div>
+
+        <section class="display-section">
+            <div class="section-header">
+                <h2>खोज परिणामहरू</h2>
+            </div>
+            
+            <div id="loadingMessage" class="message info">विवरणहरू लोड हुँदै...</div>
+            <div id="emptyMessage" class="message info" style="display: none;">
+                खोज शुरू गर्नुहोस् वा सबै विवरणहरू हेर्नको लागि खोज फिल्ड खाली छोड्नुहोस्।
+            </div>
+            <div id="noResultsMessage" class="no-results" style="display: none;">
+                <div class="no-results-icon">🔍</div>
+                <h3>कुनै परिणाम फेला परेन</h3>
+                <p>कृपया फेरि खोज्नुहोस् वा फरक खोज शब्द प्रयोग गर्नुहोस्।</p>
+            </div>
+            
+            <div id="detailsList" class="details-list details-grid">
+                <!-- Details will be dynamically added here -->
+            </div>
+        </section>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase functions
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAXJJPdjWnGrBopFFHG_q__FPfjhigjolQ",
+            authDomain: "general-ideas-26156.firebaseapp.com",
+            databaseURL: "https://general-ideas-26156-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "general-ideas-26156",
+            storageBucket: "general-ideas-26156.firebasestorage.app",
+            messagingSenderId: "409391330898",
+            appId: "1:409391330898:web:488f1b67eeaf53f329d18b",
+            measurementId: "G-NDKT35W743"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        let analytics;
+        try {
+            analytics = getAnalytics(app);
+        } catch (e) {
+            console.log('Analytics not available:', e);
+        }
+        const database = getDatabase(app);
+
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM Elements
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const detailsList = document.getElementById('detailsList');
+            const loadingMessage = document.getElementById('loadingMessage');
+            const emptyMessage = document.getElementById('emptyMessage');
+            const noResultsMessage = document.getElementById('noResultsMessage');
+            const resultsInfo = document.getElementById('resultsInfo');
+
+            // Reference to the database location
+            const detailsRef = ref(database, 'userDetails');
+
+            // Store all details
+            let allDetails = [];
+            let filteredDetails = [];
+
+            // Function to format date
+            function formatDate(timestamp) {
+                const date = new Date(timestamp);
+                return date.toLocaleString('ne-NP');
+            }
+
+            // Function to format money
+            function formatMoney(amount) {
+                if (!amount && amount !== 0) return 'N/A';
+                return new Intl.NumberFormat('ne-NP', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(parseFloat(amount));
+            }
+
+            // Function to escape HTML
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            // Function to create detail card
+            function createDetailCard(id, detail, serialNumber) {
+                const card = document.createElement('div');
+                card.className = 'detail-card';
+                card.dataset.id = id;
+                
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3>${escapeHtml(detail.name || 'N/A')}</h3>
+                        <button class="btn-delete" data-id="${id}" title="मेटाउनुहोस्">🗑️</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="detail-item">
+                            <span class="detail-label">🔢 क्रम संख्या:</span>
+                            <span class="detail-value serial-number">${serialNumber}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">📋 चिना नं-:</span>
+                            <span class="detail-value">${escapeHtml(detail.chinaNumber || 'N/A')}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">👤 नाम:</span>
+                            <span class="detail-value">${escapeHtml(detail.name || 'N/A')}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">📍 चीनको स्थान:</span>
+                            <span class="detail-value">${escapeHtml(detail.location || 'N/A')}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">💰 पैसा:</span>
+                            <span class="detail-value money-amount">रु. ${formatMoney(detail.money)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">📊 चिना इस्तिथि:</span>
+                            <span class="detail-value status-badge">${escapeHtml(detail.status || 'N/A')}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">🕒 थपिएको मिति:</span>
+                            <span class="detail-value">${detail.addedAt ? formatDate(detail.addedAt) : 'हालै'}</span>
+                        </div>
+                    </div>
+                `;
+                
+                // Add delete functionality
+                const deleteBtn = card.querySelector('.btn-delete');
+                deleteBtn.addEventListener('click', () => deleteDetail(id));
+                
+                return card;
+            }
+            
+            // Function to delete detail
+            async function deleteDetail(id) {
+                if (!confirm('के तपाईं यो विवरण मेटाउन निश्चित हुनुहुन्छ?')) {
+                    return;
+                }
+                
+                try {
+                    const detailRef = ref(database, `userDetails/${id}`);
+                    await remove(detailRef);
+                    
+                    // Show success message
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'message success';
+                    messageDiv.textContent = '✅ विवरण सफलतापूर्वक मेटाइयो!';
+                    messageDiv.style.display = 'block';
+                    document.querySelector('.search-section').appendChild(messageDiv);
+                    
+                    setTimeout(() => {
+                        messageDiv.remove();
+                    }, 3000);
+                } catch (error) {
+                    console.error('Error deleting detail:', error);
+                    
+                    // Show error message
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'message error';
+                    messageDiv.textContent = `❌ विवरण मेटाउँदा त्रुटि: ${error.message || 'कृपया पुन: प्रयास गर्नुहोस्।'}`;
+                    messageDiv.style.display = 'block';
+                    document.querySelector('.search-section').appendChild(messageDiv);
+                }
+            }
+
+            // Function to search details
+            function searchDetails(searchTerm) {
+                if (!searchTerm || searchTerm.trim() === '') {
+                    filteredDetails = [...allDetails];
+                    return;
+                }
+
+                const term = searchTerm.toLowerCase().trim();
+                filteredDetails = allDetails.filter(({ detail }) => {
+                    const name = (detail.name || '').toLowerCase();
+                    const chinaNumber = (detail.chinaNumber || '').toLowerCase();
+                    return name.includes(term) || chinaNumber.includes(term);
+                });
+            }
+
+            // Function to display details
+            function displayDetails() {
+                detailsList.innerHTML = '';
+                loadingMessage.style.display = 'none';
+                emptyMessage.style.display = 'none';
+                noResultsMessage.style.display = 'none';
+
+                if (filteredDetails.length === 0) {
+                    if (allDetails.length === 0) {
+                        emptyMessage.style.display = 'block';
+                    } else {
+                        noResultsMessage.style.display = 'block';
+                    }
+                    resultsInfo.style.display = 'none';
+                    return;
+                }
+
+                resultsInfo.style.display = 'block';
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    resultsInfo.textContent = `"${searchTerm}" को लागि ${filteredDetails.length} वटा परिणाम फेला पर्यो।`;
+                } else {
+                    resultsInfo.textContent = `कुल ${filteredDetails.length} वटा विवरणहरू।`;
+                }
+
+                // Sort by timestamp (newest first) and display
+                const sortedDetails = [...filteredDetails].sort((a, b) => 
+                    (b.detail.addedAt || 0) - (a.detail.addedAt || 0)
+                );
+
+                sortedDetails.forEach(({ id, detail }, index) => {
+                    const serialNumber = sortedDetails.length - index;
+                    const card = createDetailCard(id, detail, serialNumber);
+                    detailsList.appendChild(card);
+                });
+            }
+
+            // Event Listeners
+            searchBtn.addEventListener('click', () => {
+                const searchTerm = searchInput.value.trim();
+                searchDetails(searchTerm);
+                displayDetails();
+            });
+
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchBtn.click();
+                }
+            });
+
+            // Real-time search as user types (with debounce)
+            let searchTimeout;
+            searchInput.addEventListener('input', () => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    const searchTerm = searchInput.value.trim();
+                    searchDetails(searchTerm);
+                    displayDetails();
+                }, 300);
+            });
+
+            clearBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                searchDetails('');
+                displayDetails();
+                searchInput.focus();
+            });
+
+            // Listen for real-time updates from Firebase
+            console.log('Loading details from Firebase...');
+            try {
+                onValue(detailsRef, 
+                    (snapshot) => {
+                        console.log('Firebase connected successfully');
+                        loadingMessage.style.display = 'none';
+                        
+                        if (!snapshot || !snapshot.exists()) {
+                            allDetails = [];
+                            filteredDetails = [];
+                            displayDetails();
+                            return;
+                        }
+                        
+                        const details = snapshot.val();
+                        
+                        // Convert object to array
+                        allDetails = Object.entries(details)
+                            .map(([id, detail]) => ({ id, detail }));
+                        
+                        // Initially show all details
+                        filteredDetails = [...allDetails];
+                        displayDetails();
+                    }, 
+                    (error) => {
+                        loadingMessage.style.display = 'none';
+                        console.error('Firebase error:', error);
+                        let errorMsg = 'विवरणहरू लोड गर्दा त्रुटि। ';
+                        
+                        if (error?.code === 'PERMISSION_DENIED' || error?.code === 'permission-denied') {
+                            errorMsg += 'अनुमति अस्वीकृत। कृपया आफ्नो Firebase Realtime Database नियमहरू अपडेट गर्नुहोस्।';
+                        } else if (error?.message) {
+                            errorMsg += error.message;
+                        } else {
+                            errorMsg += 'कृपया Firebase Console मा आफ्नो Firebase कन्फिगरेसन जाँच गर्नुहोस्।';
+                        }
+                        
+                        emptyMessage.textContent = errorMsg;
+                        emptyMessage.className = 'message error';
+                        emptyMessage.style.display = 'block';
+                    }
+                );
+            } catch (error) {
+                loadingMessage.style.display = 'none';
+                console.error('Error initializing Firebase listener:', error);
+                emptyMessage.textContent = `त्रुटि: ${error.message || 'कृपया आफ्नो Firebase कन्फिगरेसन जाँच गर्नुहोस्।'}`;
+                emptyMessage.className = 'message error';
+                emptyMessage.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
+

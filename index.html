@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>चिना विवरण प्रबन्धन</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="starfield" id="starfield"></div>
+    <div class="planet planet-1"></div>
+    <div class="planet planet-2"></div>
+    <div class="planet planet-3"></div>
+    <div class="comet"></div>
+    <div class="container">
+        <header>
+            <div style="text-align: right; margin-bottom: 12px;">
+                <a href="details.html" class="btn btn-secondary" style="background: rgba(255, 255, 255, 0.2); color: white; border-color: rgba(255, 255, 255, 0.3); font-size: 0.9rem; padding: 8px 16px;">
+                    🔍 विवरणहरू खोज्नुहोस्
+                </a>
+            </div>
+            <h1>📝 चिना विवरण प्रबन्धन</h1>
+            <p class="subtitle">Firebase को साथ चिना विवरण थप्नुहोस् र व्यवस्थापन गर्नुहोस्</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Add Details Section -->
+            <section class="add-section">
+                <h2>नयाँ विवरण थप्नुहोस्</h2>
+                <form id="detailsForm" class="details-form">
+                    <div class="form-group">
+                        <label for="chinaNumber">चिना नं-</label>
+                        <input type="text" id="chinaNumber" name="chinaNumber" required placeholder="चिना नं- प्रविष्ट गर्नुहोस्">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="name">नाम :-</label>
+                        <input type="text" id="name" name="name" required placeholder="नाम प्रविष्ट गर्नुहोस्">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="location">चीनको स्थान</label>
+                        <input type="text" id="location" name="location" required placeholder="चीनको स्थान प्रविष्ट गर्नुहोस्">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="money">पैसा</label>
+                        <input type="number" id="money" name="money" required placeholder="रकम प्रविष्ट गर्नुहोस्" step="0.01" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="status">चिना इस्तिथि:-</label>
+                        <select id="status" name="status" required>
+                            <option value="">स्थिति छान्नुहोस्</option>
+                            <option value="सक्रिय">सक्रिय</option>
+                            <option value="निष्क्रिय">निष्क्रिय</option>
+                            <option value="सम्पन्न">सम्पन्न</option>
+                            <option value="बाकी">बाकी</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-text">विवरण थप्नुहोस्</span>
+                        <span class="btn-loader" style="display: none;">थप्दै...</span>
+                    </button>
+                </form>
+                
+                <div id="formMessage" class="message"></div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase functions
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAXJJPdjWnGrBopFFHG_q__FPfjhigjolQ",
+            authDomain: "general-ideas-26156.firebaseapp.com",
+            databaseURL: "https://general-ideas-26156-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "general-ideas-26156",
+            storageBucket: "general-ideas-26156.firebasestorage.app",
+            messagingSenderId: "409391330898",
+            appId: "1:409391330898:web:488f1b67eeaf53f329d18b",
+            measurementId: "G-NDKT35W743"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        let analytics;
+        try {
+            analytics = getAnalytics(app);
+        } catch (e) {
+            console.log('Analytics not available:', e);
+        }
+        const database = getDatabase(app);
+
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Create starfield animation
+            const starfield = document.getElementById('starfield');
+            // Adjust number of stars based on screen size for better mobile performance
+            const isMobile = window.innerWidth <= 768;
+            const numStars = isMobile ? 80 : 150;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // Random size
+                const size = Math.random();
+                if (size < 0.6) {
+                    star.classList.add('small');
+                } else if (size < 0.9) {
+                    star.classList.add('medium');
+                } else {
+                    star.classList.add('large');
+                }
+                
+                // Random position
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                
+                // Random animation delay
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (2 + Math.random() * 2) + 's';
+                
+                starfield.appendChild(star);
+            }
+            
+            // Create additional comets
+            setInterval(() => {
+                const comet = document.createElement('div');
+                comet.className = 'comet';
+                comet.style.left = Math.random() * 100 + '%';
+                comet.style.animationDuration = (10 + Math.random() * 10) + 's';
+                document.body.appendChild(comet);
+                
+                setTimeout(() => {
+                    comet.remove();
+                }, 20000);
+            }, 8000);
+            
+            // DOM Elements
+            const detailsForm = document.getElementById('detailsForm');
+            const formMessage = document.getElementById('formMessage');
+            const submitBtn = detailsForm.querySelector('button[type="submit"]');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoader = submitBtn.querySelector('.btn-loader');
+
+            // Reference to the database location (for adding details only)
+            const detailsRef = ref(database, 'userDetails');
+
+            // Function to show message
+            function showMessage(element, message, type = 'success') {
+                element.textContent = message;
+                element.className = `message ${type}`;
+                element.style.display = 'block';
+                
+                if (type === 'success') {
+                    setTimeout(() => {
+                        element.style.display = 'none';
+                    }, 3000);
+                }
+            }
+
+
+            // Function to add detail to Firebase
+            async function addDetail(detailData) {
+                try {
+                    // Add timestamp
+                    detailData.addedAt = Date.now();
+                    
+                    // Push to Firebase (Firebase will auto-generate unique ID as serial number)
+                    await push(detailsRef, detailData);
+                    showMessage(formMessage, '✅ विवरण सफलतापूर्वक थपियो!', 'success');
+                    
+                    // Reset form
+                    detailsForm.reset();
+                    
+                    // Reset button state
+                    btnText.style.display = 'inline';
+                    btnLoader.style.display = 'none';
+                    submitBtn.disabled = false;
+                    
+                } catch (error) {
+                    console.error('Error adding detail:', error);
+                    showMessage(formMessage, `❌ विवरण थप्दा त्रुटि: ${error.message || 'कृपया आफ्नो Firebase कन्फिगरेसन र डेटाबेस नियमहरू जाँच गर्नुहोस्।'}`, 'error');
+                    
+                    // Reset button state
+                    btnText.style.display = 'inline';
+                    btnLoader.style.display = 'none';
+                    submitBtn.disabled = false;
+                }
+            }
+
+
+            // Event Listeners
+            detailsForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Get form data
+                const formData = new FormData(detailsForm);
+                const detailData = {
+                    chinaNumber: formData.get('chinaNumber').trim(),
+                    name: formData.get('name').trim(),
+                    location: formData.get('location').trim(),
+                    money: parseFloat(formData.get('money')) || 0,
+                    status: formData.get('status').trim()
+                };
+                
+                // Validate
+                if (!detailData.chinaNumber || !detailData.name || !detailData.location || !detailData.status) {
+                    showMessage(formMessage, '⚠️ कृपया सबै आवश्यक फिल्डहरू भर्नुहोस्।', 'error');
+                    return;
+                }
+                
+                if (isNaN(detailData.money) || detailData.money < 0) {
+                    showMessage(formMessage, '⚠️ कृपया वैध रकम प्रविष्ट गर्नुहोस्।', 'error');
+                    return;
+                }
+                
+                // Show loading state
+                btnText.style.display = 'none';
+                btnLoader.style.display = 'inline';
+                submitBtn.disabled = true;
+                
+                // Hide previous message
+                formMessage.style.display = 'none';
+                
+                // Add detail
+                await addDetail(detailData);
+            });
+
+            // Initialize Firebase connection (for form submission only)
+            console.log('Firebase initialized for form submission');
+            console.log('Database URL:', firebaseConfig.databaseURL);
+            console.log('Project ID:', firebaseConfig.projectId);
+        });
+    </script>
+</body>
+</html>
+
